@@ -1,0 +1,20 @@
+<div class="home">
+    <h1>My Petition</h1>
+    <p>Check out my petition!</p>
+    <div class="">
+        <img src="https://www.elchschilder.de/images/product_images/original_images/Verbotsschild_Alkoholverbot_fuer_Badegaeste.png" alt="img">
+
+        {{#if error}}
+            <p>{{error}}</p>
+        {{/if}}
+
+        <form class="" action="/petition" method="post">
+            <input type="text" name="firstname">First Name
+            <input type="text" name="lastname">Last Name
+            <canvas id="canvas" width="500" height="100">Your Browser does not support Canvas, please upgrade</canvas>
+            <input id="signatureField" type="hidden" name="signature">
+            <button type="submit" name="button">Submit</button>
+        </form>
+    </div>
+    <script src="/script.js" charset="utf-8"></script>
+</div>
