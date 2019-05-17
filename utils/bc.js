@@ -1,4 +1,6 @@
+//Password Hash
 var bcrypt = require("bcryptjs");
+
 //Wil be called in the POST registration route
 module.exports.hashPassword = function hashPassword(plainTextPassword) {
     return new Promise(function(resolve, reject) {
@@ -37,9 +39,9 @@ module.exports.checkPassword = function checkPassword(
 };
 //signatureId: 2 corresponds with ID from signatures, not userId!
 // userId: 3 corresponds with ID from users!!!
-{
-    signatureId: 2,
-    userId: 3
-}
-
-req.session.userId = 3;
+// {
+//     signatureId: 2,
+//     userId: 3
+// }
+//
+// req.session.userId = 3;
