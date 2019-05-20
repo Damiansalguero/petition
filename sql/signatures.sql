@@ -2,7 +2,7 @@
 DROP TABLE IF EXISTS signatures;
 CREATE TABLE signatures(
     id SERIAL PRIMARY KEY,
-    userid INT NOT NULL UNIQUE,
+    user_id INT NOT NULL UNIQUE,
     signature TEXT NOT NULL
 );
 

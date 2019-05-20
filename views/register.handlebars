@@ -1,14 +1,14 @@
 <div class="register">
-    <img src="https://www.elchschilder.de/images/product_images/original_images/Verbotsschild_Alkoholverbot_fuer_Badegaeste.png" alt="img">
 
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+    <p class="intro">Seenotrettung darf niemals von EU-Verhandlungen abhängig sein, Verteilungsfragen müssen an Land geklärt werden. Wir fordern die europäische Kommission auf: Ziehen Sie ein für alle mal einen Schlusstrich unter das würdelose Feilschen um Menschen. Weisen Sie den 47 Überlebenden auf der Sea-Watch 3 sofort einen sicheren Hafen zu und stellen sie sicher, dass in zukünftigen Fällen direkt und ohne Verzögerung ein sicherer Hafen zugewiesen wird!</p>
     <div class="">
 
         {{#if error}}
             <p>{{error}}</p>
         {{/if}}
 
-        <form class="" action="/register" method="post">
+        <form class="register-form" action="/register" method="post">
             <input type="text" name="firstname" placeholder="first">
             <input type="text" name="lastname" placeholder="last">
             <input type="email" name="email" placeholder="email">
@@ -16,5 +16,5 @@
             <button type="submit">Submit</button>
         </form>
     </div>
-    <p>If you are already a member, please <a href="/login">login</a> </p>
+    <p class="login-reg">If you are already a member, please <a href="/login">login</a> </p>
 </div>

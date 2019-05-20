@@ -1,10 +1,14 @@
 <div class="signers">
-    <img src="https://www.elchschilder.de/images/product_images/original_images/Verbotsschild_Alkoholverbot_fuer_Badegaeste.png" alt="img">
+    
     <h1>Thanks for signing</h1>
-    {{#each names}}
+    {{#data}}
+    {{#if homepage}}
     <ul>
-        <li>{{firstname}} {{lastname}}</li>
+        <li> <a href={{homepage}}>{{firstname}} {{lastname}}</a>, {{age}}, <a href="/petition/signers/{{city}}">{{city}}</a> </li>
     </ul>
-    {{/each}}
+    {{else}}
+        <li>{{firstname}} {{lastname}}, {{age}}, <a href="/petition/signers/{{city}}">{{city}}</a></li>
+    {{/if}}
+    {{/data}}
 
 </div>

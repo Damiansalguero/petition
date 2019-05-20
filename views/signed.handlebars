@@ -2,7 +2,9 @@
     <p>Thanks for signing</p>
     <!--Image here needs url of the signature-->
     <!-- {{signature}} comes from signature property from index.js app.get (/signed) -->
-    <img src={{signature}} alt="img">
+    <div class="sig-container">
+        <img class="signature-img" src={{signature}} alt="img">
+    </div>
     <!--"/petition/signers is path to next template; same name as in index.js"-->
     <h3><a href="/petition/signers">See all {{count}} signers</a></h3>
 </div>

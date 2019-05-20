@@ -11,8 +11,8 @@ $(document).ready(function() {
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
     //Drawing Stlye Setup
-    context.strokeStyle = "black";
-    context.fillStyle = "black";
+    context.strokeStyle = "cornflowerblue";
+    context.fillStyle = "cornflowerblue";
     context.lineWidth = 4;
 
     $("#canvas").mousedown(function(e) {

@@ -1,17 +1,18 @@
 <div class="home">
-    <h1>My Petition</h1>
-    <p>Check out my petition!</p>
-    <div class="">
-        <img src="https://www.elchschilder.de/images/product_images/original_images/Verbotsschild_Alkoholverbot_fuer_Badegaeste.png" alt="img">
+    <h1>Help us to rescue lives</h1>
+    <p>Please sign here inside the text field and submit!</p>
+    <div class="petition">
 
         {{#if error}}
             <p>{{error}}</p>
         {{/if}}
 
         <form class="" action="/petition" method="post">
-            <canvas id="canvas" width="500" height="100">Your Browser does not support Canvas, please upgrade</canvas>
+            <canvas id="canvas" width="600" height="150">Your Browser does not support Canvas, please upgrade</canvas>
             <input id="signatureField" type="hidden" name="signature">
-            <button type="submit" name="button">Submit</button>
+            <div class="pet-button">
+                <button type="submit" name="button">Submit</button>
+            </div>
         </form>
     </div>
     <script src="/script.js" charset="utf-8"></script>
