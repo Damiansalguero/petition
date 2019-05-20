@@ -1,14 +1,20 @@
 const express = require("express");
 const app = express();
+//For importing it into test file
+exports.app = app;
 const db = require("./utils/db");
 const bc = require("./utils/bc");
 const hb = require("express-handlebars");
 const bodyParse = require("body-parser");
 const cookieSession = require("cookie-session");
-const { requireNoSignature } = require("./middleware");
+// const { requireNoSignature } = require("./middleware");
 
 //Access to css/html
 app.use(express.static("./public"));
+
+//Importing and using router
+// const profileRouter = require("./routers/profile");
+// app.use(profileRouter);
 
 //Cookie session
 app.use(
@@ -28,7 +34,21 @@ app.use(
         extended: false
     })
 );
-
+//================= Routes for testing ====================================
+// app.get("/home", (req, res) => {
+//     //checks for cookie
+//     if (!req.session.whatever) {
+//         res.redirect("/register");
+//     } else {
+//         res.send("<h1>hello</h1>");
+//     }
+// });
+// //the purpose of this route is to see how to write a unit that will confirm that a certain cookie has been set
+// app.post("/welcome", (req, res) => {
+//     req.session.submitted = true;
+//     res.redirect("/register");
+// });
+//================= Routes for testing ====================================
 //ROUTES
 
 //Route "Registration"
@@ -108,7 +128,7 @@ app.get("/login", (req, res) => {
 // POST for login
 app.post("/login", (req, res) => {
     // get user's hash from db
-    db.loginCheck(req.body.email).then(userInformation => {
+    db.userCheck(req.body.email).then(userInformation => {
         const hashedPw = userInformation.rows[0].password;
         // console.log("hashedPw", hashedPw);
         // call checkPassword from bc.js to check password
@@ -135,7 +155,7 @@ app.post("/login", (req, res) => {
 
 //Route "petition"
 //requireNoSignature is callback function that runs
-app.get("/petition", requireNoSignature, (req, res) => {
+app.get("/petition", (req, res) => {
     //signatureId = value of cookies; if existing then redirect
     if (req.session.signatureId) {
         res.redirect("/petition/signed");
@@ -211,10 +231,80 @@ app.get("/petition/signers/:city", (req, res) => {
         });
     });
 });
+// Route GET "edit"
+app.get("/profile/edit", (req, res) => {
+    // console.log(req.session);
+    db.getUserProfileInfo(req.session.userId).then(returnUser => {
+        // console.log(returnUser.rows);
+        res.render("edit", {
+            layout: "main",
+            data: returnUser.rows
+        });
+    });
+});
+
+//Route POST "edit"
+app.post("/profile/edit", (req, res) => {
+    // console.log("ooooooooooooooooone");
+    if (req.body.password == "") {
+        // console.log("twooooooooooooooooooo");
+
+        db.editUser(
+            req.body.firstname,
+            req.body.lastname,
+            req.body.email,
+            req.session.userId
+        )
+
+            .then(() => {
+                // console.log("threeeeeeee");
+                db.editUserProfile(
+                    req.body.age,
+                    req.body.city,
+                    req.body.homepage,
+                    req.session.userId
+                );
+                res.redirect("/petition");
+            })
+            .catch(err => {
+                // console.log("foouuuuuuuuuuuurrrr");
+                console.log(err);
+                res.redirect("/register");
+            });
+    } else {
+        bc.hashPassword(req.body.password).then(editResult => {
+            // console.log("fiiiiiiiiiiive");
+            const hashedPw = editResult.rows[0].password;
+            db.editUserPW(
+                req.body.firstname,
+                req.body.lastname,
+                req.body.email,
+                hashedPw,
+                req.session.userId
+            )
+                .then(() => {
+                    // console.log("siiiiiiiiiiiiiiiiiix");
+                    db.editUserProfile(
+                        req.body.age,
+                        req.body.city,
+                        req.body.homepage,
+                        req.session.userId
+                    );
+                    res.redirect("/petition");
+                })
+                .catch(err => {
+                    // console.log("seveeeeeeeeeeeeeeen");
+                    console.log(err);
+                    res.redirect("/register");
+                });
+        });
+    }
+});
 // Log out route
 // app.get("/logout", (req, res) => {
 //     req.session = null;
 //     res.redirect("/register");
 // });
-
-app.listen(process.env.PORT || 8080, () => console.log("Listening"));
+if (require.main == module) {
+    app.listen(process.env.PORT || 8080, () => console.log("Listening"));
+}

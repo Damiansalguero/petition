@@ -90,13 +90,66 @@ module.exports.addUserInfo = function addUserInfo(
     );
 };
 //Login getting Data
-module.exports.loginCheck = function loginCheck(email) {
+module.exports.userCheck = function userCheck(email) {
     return db.query(
         `
-        SELECT email, password, users.id AS user_id, signatures.id AS sign_id
+        SELECT email, password, firstname, lastname, age, city, homepage,signatures.signature, users.id AS user_id, signatures.id AS sign_id
         FROM users
         LEFT OUTER JOIN signatures ON signatures.user_id = users.id
+        LEFT OUTER JOIN user_profiles ON users.id = user_profiles.user_id
         WHERE email = $1;`,
         [email]
+    );
+};
+
+module.exports.getUserProfileInfo = function getUserProfileInfo(userId) {
+    return db.query(
+        `
+    SELECT firstname, lastname, email, age, city, homepage
+    FROM users
+    LEFT OUTER JOIN user_profiles ON users.id = user_profiles.user_id
+    WHERE users.id = $1;`,
+        [userId]
+    );
+};
+
+//Editing user_profiles/users
+
+module.exports.editUserPw = function editUserPw(
+    firstname,
+    lastname,
+    email,
+    hashedPw,
+    id
+) {
+    return db.query(
+        `
+            UPDATE users SET firstname = $1, lastname = $2, email = $3, hashedPw = $4 WHERE id = $5;
+            `[(firstname, lastname, email, hashedPw, id)]
+    );
+};
+
+module.exports.editUser = function editUser(firstname, lastname, email, id) {
+    return db.query(
+        `
+            UPDATE users SET firstname = $1, lastname = $2, email = $3, WHERE id = $4;
+            `[(firstname, lastname, email, id)]
+    );
+};
+
+module.exports.editUserProfile = function editUserProfile(
+    age,
+    city,
+    homepage,
+    user_id
+) {
+    return db.query(
+        `
+            INSERT INTO (age, city, homepage, user_id)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (user_id)
+            DO UPDATE SET city=$1, age=$2, homepage=$3
+            `,
+        [(age, city, homepage, user_id)]
     );
 };

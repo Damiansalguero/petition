@@ -1,0 +1,15 @@
+<div class="edit">
+    <form class="edit-form" action="/profile/edit" method="POST">
+        {{#data}}
+        <input type="text" name="firstname" placeholder="firstname" value="{{firstname}}">
+        <input type="text" name="lastname" placeholder="lastname" value="{{lastname}}">
+        <input type="email" name="email" placeholder="email" value="{{email}}">
+        <input type="password" name="password" placeholder="password" value="">
+        <input type="text" name="age" placeholder="age" value="{{age}}">
+        <input type="text" name="city" placeholder="city" value="{{city}}">
+        <input type="text" name="homepage" placeholder="homepage" value="{{homepage}}">
+        <button type="submit" name="button">Update</button>
+        {{/data}}
+    </form>
+
+</div>
