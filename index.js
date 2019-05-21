@@ -65,7 +65,7 @@ app.use(function(req, res, next) {
 
 //Route "Registration"
 app.get("/", (req, res) => {
-    res.redired("/register");
+    res.redirect("/register");
 });
 
 //Add user to "users"

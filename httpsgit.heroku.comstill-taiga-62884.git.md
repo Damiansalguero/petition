@@ -1,1 +1,1 @@
- https://still-taiga-62884.herokuapp.com
+ https://still-taiga-62884.herokuapp.com/
