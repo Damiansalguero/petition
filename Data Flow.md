@@ -62,20 +62,20 @@
 - use `POST` 
 - After unsigning, logged in users should be redirected to the page on which they can sign the petition.
 
-### Logout
+### ~~Logout~~
 
-- navbar with logout
+- ~~navbar with logout~~
 
-  - button/ li for logout
+  - ~~button/ li for logout~~
 
-- redirect to ....
+- ~~redirect to ....~~
 
   
 
 ### Redirects
 
-- routes
-- blocked routes
+- ~~routes~~
+- ~~blocked routes~~
 - error messages
 
 ### ~~Signed~~
