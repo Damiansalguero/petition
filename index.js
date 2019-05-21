@@ -64,10 +64,8 @@ app.use(function(req, res, next) {
 //ROUTES
 
 //Route "Registration"
-app.get("/register", (req, res) => {
-    res.render("register", {
-        layout: "main"
-    });
+app.get("/", (req, res) => {
+    res.redired("/register");
 });
 
 //Add user to "users"
