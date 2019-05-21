@@ -10,6 +10,7 @@
         <form class="" action="/petition" method="post">
             <canvas id="canvas" width="600" height="150">Your Browser does not support Canvas, please upgrade</canvas>
             <input id="signatureField" type="hidden" name="signature">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <div class="pet-button">
                 <button type="submit" name="button">Submit</button>
             </div>

@@ -1,7 +1,21 @@
 <div class="partial">
     <ul class="nav">
-        <li><a href="/register">Home</a></li>
-        <li><a href="/projects">Projects</a></li>
-        <li><a href="/about">About</a></li>
+        {{#if users}}
+        <div class="nav-users">
+            <li><a href="/petition">Sign the Petition</a></li>
+            <li><a href="/petition/signers">See who signed</a></li>
+            <li><a href="/profile/edit">Edit Your Profile</a></li>
+            <li><a href="/petition/signed">See your Signature</a></li>
+        </div>
+            <div class="logout-users">
+                <li><a href="/logout">Logout</a></li>
+            </div>
+            {{else}}
+        <li class="logo"><a href="/register"> <i class="fas fa-hands-helping"></i>
+        SOS</a></li>
+        <div class="login-logout">
+            <li><a href="/login">Login</a></li>
+        </div>
+        {{/if}}
     </ul>
 </div>

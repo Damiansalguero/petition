@@ -20,6 +20,16 @@ module.exports.addSignature = function addSignature(signature, user_id) {
         [signature, user_id]
     );
 };
+
+//Delete signature
+module.exports.deleteSignature = function deleteSignature(signature) {
+    return db.query(
+        `
+        DELETE FROM signatures WHERE id = $1;
+        `,
+        [signature]
+    );
+};
 //get signature from database
 module.exports.getSignature = function getSignature(signatureId) {
     //id here comes from db.js
@@ -48,12 +58,14 @@ module.exports.getSigners = function getSigners(city) {
         );
     } else {
         //Shows all the signers from all cities
-        return db.query(`
+        return db.query(
+            `
             SELECT firstname, lastname, age, city, homepage
             FROM signatures
             LEFT OUTER JOIN users ON signatures.user_id = users.id
             LEFT OUTER JOIN user_profiles ON signatures.user_id = user_profiles.user_id
-            `);
+            `
+        );
     }
 };
 
@@ -97,7 +109,8 @@ module.exports.userCheck = function userCheck(email) {
         FROM users
         LEFT OUTER JOIN signatures ON signatures.user_id = users.id
         LEFT OUTER JOIN user_profiles ON users.id = user_profiles.user_id
-        WHERE email = $1;`,
+        WHERE email = $1;
+        `,
         [email]
     );
 };
@@ -105,10 +118,11 @@ module.exports.userCheck = function userCheck(email) {
 module.exports.getUserProfileInfo = function getUserProfileInfo(userId) {
     return db.query(
         `
-    SELECT firstname, lastname, email, age, city, homepage
-    FROM users
-    LEFT OUTER JOIN user_profiles ON users.id = user_profiles.user_id
-    WHERE users.id = $1;`,
+        SELECT firstname, lastname, email, age, city, homepage
+        FROM users
+        LEFT OUTER JOIN user_profiles ON users.id = user_profiles.user_id
+        WHERE users.id = $1;
+        `,
         [userId]
     );
 };
@@ -119,21 +133,23 @@ module.exports.editUserPw = function editUserPw(
     firstname,
     lastname,
     email,
-    hashedPw,
+    password,
     id
 ) {
     return db.query(
         `
-            UPDATE users SET firstname = $1, lastname = $2, email = $3, hashedPw = $4 WHERE id = $5;
-            `[(firstname, lastname, email, hashedPw, id)]
+            UPDATE users SET firstname = $1, lastname = $2, email = $3, password = $4 WHERE id = $5;
+        `,
+        [firstname, lastname, email, password, id]
     );
 };
 
 module.exports.editUser = function editUser(firstname, lastname, email, id) {
     return db.query(
         `
-            UPDATE users SET firstname = $1, lastname = $2, email = $3, WHERE id = $4;
-            `[(firstname, lastname, email, id)]
+            UPDATE users SET firstname = $1, lastname = $2, email = $3 WHERE id = $4;
+        `,
+        [firstname, lastname, email, id]
     );
 };
 
@@ -145,11 +161,11 @@ module.exports.editUserProfile = function editUserProfile(
 ) {
     return db.query(
         `
-            INSERT INTO (age, city, homepage, user_id)
+            INSERT INTO user_profiles (age, city, homepage, user_id)
             VALUES ($1, $2, $3, $4)
             ON CONFLICT (user_id)
-            DO UPDATE SET city=$1, age=$2, homepage=$3
-            `,
-        [(age, city, homepage, user_id)]
+            DO UPDATE SET age=$1, city=$2, homepage=$3
+        `,
+        [age, city, homepage, user_id]
     );
 };

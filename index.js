@@ -7,6 +7,8 @@ const bc = require("./utils/bc");
 const hb = require("express-handlebars");
 const bodyParse = require("body-parser");
 const cookieSession = require("cookie-session");
+const csurf = require("csurf");
+
 // const { requireNoSignature } = require("./middleware");
 
 //Access to css/html
@@ -34,6 +36,16 @@ app.use(
         extended: false
     })
 );
+
+//csurf use
+//To protect your Petition against CSRF attacks
+app.use(csurf());
+
+app.use(function(req, res, next) {
+    res.locals.csrfToken = req.csrfToken();
+    res.locals.users = req.session.userId;
+    next();
+});
 //================= Routes for testing ====================================
 // app.get("/home", (req, res) => {
 //     //checks for cookie
@@ -96,26 +108,33 @@ app.post("/register", (req, res) => {
 
 //Route "Profile"
 app.get("/profile", (req, res) => {
-    res.render("profile", {
-        layout: "main"
-    });
+    if (!req.session.userId) {
+        res.redirect("/register");
+    } else {
+        res.render("profile", {
+            layout: "main"
+        });
+    }
 });
 
 //Posting Data to users_profile
 app.post("/profile", (req, res) => {
-    db.addUserInfo(
-        req.body.age,
-        req.body.city,
-        req.body.homepage,
-        req.session.user_id
-    )
-        .then(profileInfo => {
-            // console.log(profileInfo);
-            res.redirect("/petition");
-        })
-        .catch(err => {
-            console.log(err);
-        });
+    if (!req.session.userId) {
+        res.redirect("/register");
+    } else {
+        db.addUserInfo(
+            req.body.age,
+            req.body.city,
+            req.body.homepage,
+            req.session.user_id
+        )
+            .then(() => {
+                res.redirect("/petition");
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
 });
 
 //Route "Login"
@@ -130,12 +149,10 @@ app.post("/login", (req, res) => {
     // get user's hash from db
     db.userCheck(req.body.email).then(userInformation => {
         const hashedPw = userInformation.rows[0].password;
-        // console.log("hashedPw", hashedPw);
         // call checkPassword from bc.js to check password
         // entered in input field with hash from db
         bc.checkPassword(req.body.password, hashedPw)
-            .then(resultLogin => {
-                // console.log("resultLogin", resultLogin);
+            .then(() => {
                 // put userId in session
                 req.session.userId = userInformation.rows[0].user_id;
                 req.session.sign_id = userInformation.rows[0].sign_id;
@@ -156,8 +173,11 @@ app.post("/login", (req, res) => {
 //Route "petition"
 //requireNoSignature is callback function that runs
 app.get("/petition", (req, res) => {
+    console.log("session", req.session);
     //signatureId = value of cookies; if existing then redirect
-    if (req.session.signatureId) {
+    if (!req.session.userId) {
+        res.redirect("/register");
+    } else if (req.session.sign_id) {
         res.redirect("/petition/signed");
     } else {
         res.render("petition", {
@@ -179,13 +199,12 @@ app.post("/petition", (req, res) => {
         db.addSignature(
             //das letzte in der Kette ist "name = ..." im html, da man hier auf den body zugreift
             req.body.signature,
-            req.session.user_id
+            req.session.userId
             //Session is promise (object)
         ).then(resultDb => {
             const signature_id = resultDb.rows[0].id;
             //Id of the signature
             req.session.sign_id = signature_id;
-            // console.log("sigId", req.session.signatureId);
             res.redirect("/petition/signed");
         });
     }
@@ -193,16 +212,32 @@ app.post("/petition", (req, res) => {
 
 //Route to "signed"
 app.get("/petition/signed", (req, res) => {
-    Promise.all([db.getSignature(req.session.sign_id), db.signerNumber()])
-        //resultDb returns data from the DB
-        //resultDb contains 2 objects; the firts one refers to the first function and so on
-        .then(resultDb => {
-            // console.log(resultDb);
-            res.render("signed", {
-                layout: "main",
-                signature: resultDb[0].rows[0].signature,
-                count: resultDb[1].rows[0].count
+    if (!req.session.sign_id) {
+        res.redirect("/petition");
+    } else {
+        Promise.all([db.getSignature(req.session.sign_id), db.signerNumber()])
+            //resultDb returns data from the DB
+            //resultDb contains 2 objects; the firts one refers to the first function and so on
+            .then(resultDb => {
+                console.log("log Result", resultDb[0].rows[0]);
+                res.render("signed", {
+                    layout: "main",
+                    signature: resultDb[0].rows[0].signature,
+                    count: resultDb[1].rows[0].count
+                });
+            })
+            .catch(err => {
+                console.log(err);
             });
+    }
+});
+
+app.post("/petition/signed", (req, res) => {
+    console.log("req.session", req.session);
+    db.deleteSignature(req.session.sign_id)
+        .then(() => {
+            req.session.sign_id = null;
+            res.redirect("/petition");
         })
         .catch(err => {
             console.log(err);
@@ -211,44 +246,54 @@ app.get("/petition/signed", (req, res) => {
 
 //Route to ("signers")
 app.get("/petition/signers", (req, res) => {
-    //FALSE here guarantees, that it goes straight to the second part of the code, since the original function expects a argument
-    db.getSigners(false).then(resultSigners => {
-        // console.log("resultNames", resultNames);
-        res.render("signers", {
-            layout: "main",
-            data: resultSigners.rows
+    if (!req.session.userId) {
+        res.redirect("/register");
+    } else if (!req.session.sign_id) {
+        res.redirect("/petition");
+    } else {
+        //FALSE here guarantees, that it goes straight to the second part of the code, since the original function expects a argument
+        db.getSigners(false).then(resultSigners => {
+            res.render("signers", {
+                layout: "main",
+                data: resultSigners.rows
+            });
         });
-    });
+    }
 });
 
 //Route to ("signers/:city")
 app.get("/petition/signers/:city", (req, res) => {
-    db.getSigners(req.params.city).then(resultSigners => {
-        // console.log("resultNames", resultNames);
-        res.render("signers", {
-            layout: "main",
-            data: resultSigners.rows
+    if (!req.session.userId) {
+        res.redirect("/register");
+    } else if (!req.session.sign_id) {
+        res.redirect("/petition");
+    } else {
+        db.getSigners(req.params.city).then(resultSigners => {
+            res.render("signers", {
+                layout: "main",
+                data: resultSigners.rows
+            });
         });
-    });
+    }
 });
 // Route GET "edit"
 app.get("/profile/edit", (req, res) => {
-    // console.log(req.session);
-    db.getUserProfileInfo(req.session.userId).then(returnUser => {
-        // console.log(returnUser.rows);
-        res.render("edit", {
-            layout: "main",
-            data: returnUser.rows
+    if (!req.session.userId) {
+        res.redirect("/register");
+    } else {
+        db.getUserProfileInfo(req.session.userId).then(returnUser => {
+            res.render("edit", {
+                layout: "main",
+                data: returnUser.rows
+            });
         });
-    });
+    }
 });
 
 //Route POST "edit"
 app.post("/profile/edit", (req, res) => {
-    // console.log("ooooooooooooooooone");
+    console.log("req.body", req.body);
     if (req.body.password == "") {
-        // console.log("twooooooooooooooooooo");
-
         db.editUser(
             req.body.firstname,
             req.body.lastname,
@@ -257,25 +302,24 @@ app.post("/profile/edit", (req, res) => {
         )
 
             .then(() => {
-                // console.log("threeeeeeee");
                 db.editUserProfile(
                     req.body.age,
                     req.body.city,
                     req.body.homepage,
                     req.session.userId
                 );
-                res.redirect("/petition");
+                res.redirect("/petition/signed");
             })
             .catch(err => {
-                // console.log("foouuuuuuuuuuuurrrr");
                 console.log(err);
                 res.redirect("/register");
             });
     } else {
         bc.hashPassword(req.body.password).then(editResult => {
-            // console.log("fiiiiiiiiiiive");
-            const hashedPw = editResult.rows[0].password;
-            db.editUserPW(
+            console.log("editResult", editResult);
+            const hashedPw = editResult;
+            console.log("req.session", req.session);
+            db.editUserPw(
                 req.body.firstname,
                 req.body.lastname,
                 req.body.email,
@@ -283,28 +327,28 @@ app.post("/profile/edit", (req, res) => {
                 req.session.userId
             )
                 .then(() => {
-                    // console.log("siiiiiiiiiiiiiiiiiix");
                     db.editUserProfile(
                         req.body.age,
                         req.body.city,
                         req.body.homepage,
                         req.session.userId
                     );
-                    res.redirect("/petition");
+                    res.redirect("/petition/signed");
                 })
                 .catch(err => {
-                    // console.log("seveeeeeeeeeeeeeeen");
                     console.log(err);
                     res.redirect("/register");
                 });
         });
     }
 });
+
 // Log out route
-// app.get("/logout", (req, res) => {
-//     req.session = null;
-//     res.redirect("/register");
-// });
+app.get("/logout", (req, res) => {
+    req.session = null;
+    res.redirect("/register");
+});
+
 if (require.main == module) {
     app.listen(process.env.PORT || 8080, () => console.log("Listening"));
 }

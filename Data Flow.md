@@ -21,8 +21,8 @@
 
 ### Petition
 
-- change table
-- change form
+- ~~change table~~
+- ~~change~~ form
 
 ### Profile
 
@@ -36,19 +36,20 @@
 
 #### Edit
 
-- two queries
+- ~~two queries~~
 
-  - one thats affects  `users`  table and another for `user_profiles`  table.
+  - ~~one thats affects  `users`  table and another for `user_profiles`  table.~~
 
-  - `users` table use `UPDATE` 
+  - ~~`users` table use `UPDATE`~~ 
 
-    - determine whether the query should update the password column or not
-    - If the user did not submit a new password, the query should not update the password
-
-  - `user_profiles`  table `UPSERT `  (insert a row if one does not already exist and update it if it does)
-
-    - In the following example, if no row exists with the name 'Penélepe Cruz', one will be created. If one does exist, the existing row will have its age and oscars column updated. For this to work, the name column must have a unique constraint on it.
-
+    - ~~determine whether the query should update the password column or not~~
+    - ~~If the user did not submit a new password, the query should not update the password~~
+    - ~~password doesnt work~~
+  
+- `~~~~user_profiles`  table `UPSERT `  (insert a row if one does not already exist and update it if it does)~~~~
+  
+  - ~~In the following example, if no row exists with the name 'Penélepe Cruz', one will be created. If one does exist, the existing row will have its age and oscars column updated. For this to work, the name column must have a unique constraint on it.~~
+  
     - ```sql
       INSERT INTO actors (name, age, oscars)
       VALUES ('Penélope Cruz', 43, 1)
@@ -71,16 +72,20 @@
 
   
 
+### Redirects
 
+- routes
+- blocked routes
+- error messages
 
-### Signed
+### ~~Signed~~
 
 - ~~Show thank you note~~
 - ~~link to signers~~ 
 
-### Signers 
+### ~~Signers~~ 
 
-- Show all signers
+- ~~Show all signers~~
   - ~~Change  `signatures`~~ 
   -  ~~When showing the list of people who have signed the petition, **get their names** by joining the `users` table.~~
 - ~~show the additional profile information~~
@@ -90,7 +95,7 @@
   - ~~home page = Name + link --> Homepage~~
 - ~~Change the query that retrieves information from the `users` table by email address so **that it also gets data from the signatures table**. Thus you will be able to know whether the user has signed the petition or not as soon as they log in.~~
 
-### Signer/:city 
+### ~~Signer/:city~~ 
 
 - ~~change handlebar~~
   - ~~if url~~

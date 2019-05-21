@@ -2,6 +2,7 @@
     <form class="login-form" method="post">
         <input type="email" name="email" placeholder="email">
         <input type="password" name="password" placeholder="password">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <button type="submit" name="button">Submit</button>
     </form>
 </div>

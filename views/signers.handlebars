@@ -1,14 +1,13 @@
 <div class="signers">
-    
     <h1>Thanks for signing</h1>
     {{#data}}
-    {{#if homepage}}
     <ul>
+    {{#if homepage}}
         <li> <a href={{homepage}}>{{firstname}} {{lastname}}</a>, {{age}}, <a href="/petition/signers/{{city}}">{{city}}</a> </li>
-    </ul>
     {{else}}
         <li>{{firstname}} {{lastname}}, {{age}}, <a href="/petition/signers/{{city}}">{{city}}</a></li>
     {{/if}}
+</ul>
     {{/data}}
 
 </div>

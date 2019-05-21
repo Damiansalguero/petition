@@ -1,7 +1,10 @@
 <div class="register">
 
 
-    <p class="intro">Seenotrettung darf niemals von EU-Verhandlungen abhängig sein, Verteilungsfragen müssen an Land geklärt werden. Wir fordern die europäische Kommission auf: Ziehen Sie ein für alle mal einen Schlusstrich unter das würdelose Feilschen um Menschen. Weisen Sie den 47 Überlebenden auf der Sea-Watch 3 sofort einen sicheren Hafen zu und stellen sie sicher, dass in zukünftigen Fällen direkt und ohne Verzögerung ein sicherer Hafen zugewiesen wird!</p>
+    <p class="intro">To let people die on the Mediterranean Sea in order to advance the isolation of the European continent and to carry out political power struggles is unbearable and speaks against any humanity. Migration is and has always been part of our society! Instead of closing the borders, we need an open Europe, cities that show solidarity, and safe havens for those who need it the most. We stand for solidarity with all people on the run and demand of the German and European politicians a plan for safe escape routes, a decriminalization of the sea rescue itself and a decent reception of people, who had to flee or are still on the run.
+        <br>
+    Please help us make a change and register to sign the petition.</p>
+
     <div class="">
 
         {{#if error}}
@@ -13,8 +16,9 @@
             <input type="text" name="lastname" placeholder="last">
             <input type="email" name="email" placeholder="email">
             <input type="password" name="password" placeholder="password">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <button type="submit">Submit</button>
         </form>
     </div>
-    <p class="login-reg">If you are already a member, please <a href="/login">login</a> </p>
+    <p id="login-reg">If you are already a member, please <a href="/login">login</a> </p>
 </div>

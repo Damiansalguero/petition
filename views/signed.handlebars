@@ -5,6 +5,10 @@
     <div class="sig-container">
         <img class="signature-img" src={{signature}} alt="img">
     </div>
+    <form class="sign-delete" action="/petition/signed" method="post">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <button id="delete-button" type="submit" name="button">Delete Signature</button>
+    </form>
     <!--"/petition/signers is path to next template; same name as in index.js"-->
-    <h3><a href="/petition/signers">See all {{count}} signers</a></h3>
+    <h3 id="signers"><a href="/petition/signers">See all {{count}} signers</a></h3>
 </div>
