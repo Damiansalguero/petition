@@ -71,7 +71,9 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.redirect("/register");
+    res.render("register", {
+        layout: "main"
+    });
 });
 
 //Add user to "users"
@@ -99,7 +101,7 @@ app.post("/register", (req, res) => {
             })
             // put userId in session
             .then(result => {
-                req.session.user_id = result.rows[0].id;
+                req.session.userId = result.rows[0].id;
                 req.session.firstname = result.rows[0].firstname;
                 req.session.lastname = result.rows[0].lastname;
                 res.redirect("/profile");
@@ -130,7 +132,7 @@ app.post("/profile", (req, res) => {
             req.body.age,
             req.body.city,
             req.body.homepage,
-            req.session.user_id
+            req.session.userId
         )
             .then(() => {
                 res.redirect("/petition");
